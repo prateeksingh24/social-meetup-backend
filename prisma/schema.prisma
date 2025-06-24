@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/config/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String   @id @default(uuid())
+  name             String   // Display Name (required)
+  profilePhoto     String   // URL or base64 image path
+  password         String   // Hashed password
+  gender           Gender   // Enum
+  dateOfBirth      DateTime // Used to calculate age group
+  mobileNumber     String   @unique
+  whatsappNumber   String?  @unique // Optional
+  aadhaarNumber    String   // Masked before display (store full securely)
+  religion         Religion // Enum
+  city             String   // From GPS or manual entry
+
+  // Optional fields
+  relationshipStatus RelationshipStatus?
+  bio               String?  @db.VarChar(200)
+  hobbies           String[] // Array of tags/hobbies
+  email             String?  @unique
+
+  // Metadata
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Religion {
+  HINDU
+  MUSLIM
+  SIKH
+  CHRISTIAN
+  JAIN
+  BUDDHIST
+  PARSI
+  OTHER
+}
+
+enum RelationshipStatus {
+  SINGLE
+  IN_RELATIONSHIP
+  MARRIED
+  COMPLICATED
+}
